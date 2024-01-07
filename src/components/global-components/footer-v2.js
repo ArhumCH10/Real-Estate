@@ -46,9 +46,18 @@ class Footer_v2 extends Component {
           <div className="container">
             <div className="row">
               <div className="col-lg-6 col-md-4">
-                <a href="/">
-                  <img src={publicUrl + "assets/img/logo.png"} alt="img" />
-                </a>
+              <Link to="/">
+             <img
+                src={publicUrl + "assets/img/logo.png"}
+                alt="img"
+                style={{ width: '100px', height: 'auto', marginTop: "-30px" }}
+            />
+              <img
+                src={publicUrl + "assets/img/name.png"}
+                alt="img"
+                style={{ width: '120px', height: 'auto', marginTop: "-15px"  }}
+            />
+           </Link>
               </div>
               <div className="col-lg-6 col-md-8 text-md-right mt-3 mt-md-0">
                 <ul className="social-area">

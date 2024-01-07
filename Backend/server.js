@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moongoose = require("mongoose");
+const userRoutes = require('./routes/signupRoutes');
 
 require("dotenv").config();
 
@@ -27,10 +28,12 @@ const MapsRouter = require("./routes/Maps");
 const RentPropertyDetailRouter = require("./routes/RentPropertyDetail");
 const SalePropertyDetailRouter = require("./routes/SalePropertyDetail");
 const SubmittedPropertyRequestsRouter = require("./routes/SubmittedPropertyRequests");
+const sellerRoutes = require('./routes/userRoutes');
 
-
-app.use("/Admin", AdminRouter);
+app.use('/seller',AdminRouter);
+app.use('/seller', userRoutes);
 app.use("/ContactUs", ContactUsRouter);
+app.use('/seller', sellerRoutes);
 app.use("/AboutUs", AboutUsRouter);
 app.use("/Team", TeamRouter);
 app.use("/Gallery", GalleryRouter);

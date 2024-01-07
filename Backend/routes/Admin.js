@@ -1,23 +1,89 @@
 const router = require("express").Router();
-let AdminDB = require("../models/Admin.models");
+let SellerDB = require("../models/sellerSchema");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-router.route("/login").post(async (req, res) => {
-  try {
-    const username = req.body.username;
+const { body, validationResult } = require("express-validator");
+const secretKey = "realStateSecretKey";
+
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Invalid email format"),
+    body("password").notEmpty().withMessage("Password is required"),
+  ],
+  async (req, res) => {
+    try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+    const email = req.body.email;
     const password = req.body.password;
 
-    let admin = await AdminDB.findOne({ username });
 
-    if (!admin) return res.json("User not found");
+    let seller = await SellerDB.findOne({ email });
 
-    if (!(password === admin.password))
-      return res.json("Password doesn't match");
+    if (!seller) 
+    {
+       return res.status(401).json("User not found");
+    }
 
-    return res.json("Login Successful");
-  } catch {
-    return res.status(400).json("An Unexpected Error Occurred");
+    if (!seller.isVerified) {
+      return res.status(402).json({ message: "User is not verified" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, seller.password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({ message: "Password doesn't match" });
+    }
+
+    const token = jwt.sign({ userId: seller._id }, secretKey, {
+      expiresIn: "1h", // Token expiration time
+    });
+
+    return res.json({ token, message: "Login Successful" });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "An Unexpected Error Occurred" });
   }
 });
+
+router.post("/logout", async (req, res) => {
+  try {
+    const authHeader = req.header("Authorization");
+
+    if (!authHeader) {
+      console.log("No token");
+      return res.status(401).json({ message: "No token, authorization denied" });
+    }
+
+    // Split the header to get the actual token after "Bearer "
+    const token = authHeader.split(" ")[1];
+
+
+    jwt.verify(token, secretKey, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Token is not valid" });
+      }
+
+      const userId = decoded.userId;
+
+      // Perform any additional checks if needed before logging out
+
+      // Log the user out (e.g., update any session-related data)
+      // ...
+
+      return res.json({ message: "Logout successful" });
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ message: "An unexpected error occurred" });
+  }
+});
+
 
 //   router.route('/resetPassword').post(async (req,res) => {
 //         const username = req.body.username;

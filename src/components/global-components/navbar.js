@@ -66,8 +66,9 @@ class Navbar extends Component {
               </div>
               <div className="col-lg-4">
                 <ul className="topbar-right text-lg-right text-center">
+        
                   <li>
-                    <Link to="/sign-in">Login</Link>
+                    <Link to="/sign-up">Signup</Link>
                   </li>
                   <li className="social-area">
                     <a href={this.state.ContactUs.facebook}>
@@ -102,10 +103,20 @@ class Navbar extends Component {
               </button>
             </div>
             <div className="logo">
-              <Link to="/">
-                <img src={publicUrl + "assets/img/logo.png"} alt="img" />
-              </Link>
-            </div>
+               <Link to="/">
+             <img
+                src={publicUrl + "assets/img/logo.png"}
+                alt="img"
+                style={{ width: '100px', height: 'auto' }}
+            />
+                <img
+                src={publicUrl + "assets/img/name.png"}
+                alt="img"
+                style={{ width: '120px', height: 'auto', paddingTop: '15px' }}
+            />
+           </Link>
+          </div>
+
             <div className="nav-right-part nav-right-part-mobile">
               <ul>
                 <li>
@@ -161,6 +172,9 @@ class Navbar extends Component {
                 </li>
                 <li>
                   <Link to="/gallery">Gallery</Link>
+                </li>
+                <li>
+                  <Link to="/sign-in">Login</Link>
                 </li>
               </ul>
             </div>
